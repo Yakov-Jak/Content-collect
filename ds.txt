@@ -1,0 +1,60 @@
+HTTP/1.1 200 OK
+Server: GitHub.com
+Date: Sat, 15 May 2021 20:56:18 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 1300
+Cache-Control: public, max-age=60, s-maxage=60
+Vary: Accept
+ETag: "a197f7c790eecaebaf90fac1b9c97e764979371d0d54a39dce421ccd6c76de69"
+Last-Modified: Sat, 15 May 2021 14:37:50 GMT
+X-GitHub-Media-Type: github.v3; format=json
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 54
+X-RateLimit-Reset: 1621114866
+X-RateLimit-Used: 6
+X-RateLimit-Resource: core
+Access-Control-Expose-Headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset
+Access-Control-Allow-Origin: *
+Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+X-Frame-Options: deny
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Referrer-Policy: origin-when-cross-origin, strict-origin-when-cross-origin
+Content-Security-Policy: default-src 'none'
+Vary: Accept-Encoding, Accept, X-Requested-With
+X-GitHub-Request-Id: FB19:2DF4:260E665:26C1163:60A03572
+
+{
+  "login": "Yakov-Jak",
+  "id": 76076258,
+  "node_id": "MDQ6VXNlcjc2MDc2MjU4",
+  "avatar_url": "https://avatars.githubusercontent.com/u/76076258?v=4",
+  "gravatar_id": "",
+  "url": "https://api.github.com/users/Yakov-Jak",
+  "html_url": "https://github.com/Yakov-Jak",
+  "followers_url": "https://api.github.com/users/Yakov-Jak/followers",
+  "following_url": "https://api.github.com/users/Yakov-Jak/following{/other_user}",
+  "gists_url": "https://api.github.com/users/Yakov-Jak/gists{/gist_id}",
+  "starred_url": "https://api.github.com/users/Yakov-Jak/starred{/owner}{/repo}",
+  "subscriptions_url": "https://api.github.com/users/Yakov-Jak/subscriptions",
+  "organizations_url": "https://api.github.com/users/Yakov-Jak/orgs",
+  "repos_url": "https://api.github.com/users/Yakov-Jak/repos",
+  "events_url": "https://api.github.com/users/Yakov-Jak/events{/privacy}",
+  "received_events_url": "https://api.github.com/users/Yakov-Jak/received_events",
+  "type": "User",
+  "site_admin": false,
+  "name": null,
+  "company": null,
+  "blog": "",
+  "location": null,
+  "email": null,
+  "hireable": null,
+  "bio": null,
+  "twitter_username": null,
+  "public_repos": 5,
+  "public_gists": 0,
+  "followers": 0,
+  "following": 0,
+  "created_at": "2020-12-15T22:57:40Z",
+  "updated_at": "2021-05-15T14:37:50Z"
+}
