@@ -15,20 +15,22 @@ mvideo_db = client['MVideo_db']
 mvideo_col = mvideo_db.mvideo_col
 mvideo_col.delete_many({})
 
+
 chrome_options = Options()
 chrome_options.add_argument('start-maximized')
 # chrome_options.add_argument('--headless')
 driver = webdriver.Chrome(options=chrome_options)
 driver.get('https://www.mvideo.ru/?cityId=CityCZ_7173')
-ancor = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[@class='header-main__logo']")))
+ancor = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[@class='header-main__logo']"))) # Привязываемся к первому объекту в окне
+ancor.send_keys(Keys.PAGE_DOWN)                                                                                    # Прокручиваем вниз
 ancor.send_keys(Keys.PAGE_DOWN)
-ancor.send_keys(Keys.PAGE_DOWN)
-Next_button = WebDriverWait(driver, 10).\
+Next_button = WebDriverWait(driver, 10).\                                                                          # Ищем кнопку прокрутки
     until(EC.element_to_be_clickable((By.XPATH, "//h2[contains(text(), 'Новинки')]"
                                                 "/ancestor::div[contains(@class, 'facelift')]"
                                                 "//a[contains(@class, 'next-btn')]")))
 it_num = 1
 it_num_ = 0
+# Крутим пока не откроем все новинки
 while it_num != it_num_:
     actions = ActionChains(driver)
     actions.move_to_element(Next_button)
@@ -40,6 +42,7 @@ while it_num != it_num_:
     it_num_ = it_num
     it_num = len(items)
 
+# Собираем все новиник и вносим в базу данных
 for item in items:
     item_info = item.find_element_by_xpath(".//h3/a").get_attribute('data-product-info')
     item_info_json = json.loads(item_info)
