@@ -5,17 +5,20 @@
 
 import scrapy
 
-class JobparserItem(scrapy.Item):
-    name = scrapy.Field()
-    salary = scrapy.Field()
-    min_salary = scrapy.Field()
-    max_salary = scrapy.Field()
-    currency = scrapy.Field()
-
 
 class HhruItem(scrapy.Item):
     name = scrapy.Field()
-    min_salary = scrapy.Field()
-    max_salary = scrapy.Field()
+    salary = scrapy.Field()
+    smin = scrapy.Field()
+    smax = scrapy.Field()
+    link = scrapy.Field()
+    _id = scrapy.Field()
+
+
+class SjruItem(scrapy.Item):
+    name = scrapy.Field()
+    salary = scrapy.Field()
+    smin = scrapy.Field()
+    smax = scrapy.Field()
     link = scrapy.Field()
     _id = scrapy.Field()
