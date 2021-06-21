@@ -5,7 +5,6 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
 from pymongo import MongoClient
 
 
@@ -17,11 +16,13 @@ class InstaparsPipeline:
 
 
     def process_item(self, item, spider):
-        print()
-
-
-        collection = self.mongobase[item['username']]
-        collection.insert_one(item)
-
-
+        if item['type'] == 'post':
+            collection = self.mongobase[item['username']]
+            collection.insert_one(item)
+        elif item['type'] == 'flwrs':
+            collection = self.mongobase['Flwrs_'+item['group']]
+            collection.insert_one(item)
+        else:
+            collection = self.mongobase['Flwng_'+item['group']]
+            collection.insert_one(item)
         return item
