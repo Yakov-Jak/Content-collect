@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy.http import HtmlResponse
-from instapars.items import InstaparsItem
+from instapars.items import InstaparsItem, InstaparsFollowers, InstaparsFollowing
 import re
 import json
 from urllib.parse import urlencode
 from copy import deepcopy
 from instapars import psw
+from pprint import pprint
 
 class InstparsSpider(scrapy.Spider):
     name = 'instpars'
@@ -34,28 +35,15 @@ class InstparsSpider(scrapy.Spider):
         j_body = json.loads(response.text)
         if j_body['authenticated']:                 #Проверяем ответ после авторизации
             for el in self.parse_users:
+                print()
                 yield response.follow(                  #Переходим на желаемую страницу пользователя. Сделать цикл для кол-ва пользователей больше 2-ух
                     f'/{el}',
                     callback= self.user_data_parse,
-                    cb_kwargs={'username':el}
-            )
-
-    # def subscribers_parse(self, response:HtmlResponse, username):
-    #     print()
-    #     user_id = self.fetch_user_id(response.text, username)
-    #     url = f'https://i.instagram.com/api/v1/friendships/{user_id}/followers/?count=12&search_surface=follow_list_page'
-    #     yield response.follow(
-    #         url,
-    #         callback=self.subscribers_parse_next,
-    #         headers={'User-Agent': 'Instagram 64.0.0.14.96'},
-    #         cb_kwargs={'username':username,
-    #                    'user_id':user_id,}
-    #     )
+                    cb_kwargs={'username': el}
+                )
 
 
     def user_data_parse(self, response:HtmlResponse, username):
-        print()
-
         user_id = self.fetch_user_id(response.text, username)       #Получаем id пользователя
         variables={'id':user_id,                                    #Формируем словарь для передачи даных в запрос
                    'first':12}                                      #12 постов. Можно больше (макс. 50)
@@ -67,6 +55,71 @@ class InstparsSpider(scrapy.Spider):
                        'user_id':user_id,
                        'variables':deepcopy(variables)}         #variables ч/з deepcopy во избежание гонок
         )
+        url = f'https://i.instagram.com/api/v1/friendships/{user_id}/followers/?count=12&search_surface=follow_list_page'
+        yield response.follow(
+            url,
+            callback=self.subscribers_parse_next,               #Функция сбора подписчиков
+            headers={'User-Agent': 'Instagram 64.0.0.14.96'},
+            cb_kwargs={'username': username,
+                       'user_id': user_id, }
+        )
+
+        url_2 = f'https://i.instagram.com/api/v1/friendships/{user_id}/following/?count=12'
+        yield response.follow(
+            url_2,
+            callback=self.subscribtions_parse_next,             #Функция сбора подписок
+            headers={'User-Agent': 'Instagram 64.0.0.14.96'},
+            cb_kwargs={'username': username,
+                       'user_id': user_id, }
+        )
+
+    def subscribers_parse_next(self, response:HtmlResponse, username, user_id):
+        j_data = json.loads(response.text)
+        pprint(j_data)
+        if j_data.get('next_max_id'):
+            url = f'https://i.instagram.com/api/v1/friendships/{user_id}/followers/?count=12&max_id={j_data.get("next_max_id")}&search_surface=follow_list_page'
+            yield response.follow(
+                url,
+                callback=self.subscribers_parse_next,
+                headers={'User-Agent': 'Instagram 64.0.0.14.96'},
+                cb_kwargs={'username':username,
+                           'user_id':user_id,}
+        )
+
+        followers = j_data.get('users')
+        for user in followers:
+            item_2 = InstaparsFollowers(
+                username=user['username'],
+                user_link=f"https://www.instagram.com/{user['username']}/",
+                photo=user['profile_pic_url'],
+                group=username,
+                type='flwrs'
+            )
+            yield item_2
+
+    def subscribtions_parse_next(self, response:HtmlResponse, username, user_id):
+        j_data = json.loads(response.text)
+        pprint(j_data)
+        if j_data.get('next_max_id'):
+            url = f'https://i.instagram.com/api/v1/friendships/{user_id}/following/?count=12&max_id={j_data.get("next_max_id")}'
+            yield response.follow(
+                url,
+                callback=self.subscribers_parse_next,
+                headers={'User-Agent': 'Instagram 64.0.0.14.96'},
+                cb_kwargs={'username':username,
+                           'user_id':user_id,}
+        )
+
+        following = j_data.get('users')
+        for user in following:
+            item_3 = InstaparsFollowing(
+                username=user['username'],
+                user_link=f"https://www.instagram.com/{user['username']}/",
+                photo=user['profile_pic_url'],
+                group=username,
+                type='flwng'
+            )
+            yield item_3
 
     def user_posts_parse(self, response:HtmlResponse,username,user_id,variables):   #Принимаем ответ. Не забываем про параметры от cb_kwargs
         j_data = json.loads(response.text)
@@ -88,9 +141,10 @@ class InstparsSpider(scrapy.Spider):
                 username=username,
                 photo=post['node']['display_url'],
                 likes=post['node']['edge_media_preview_like']['count'],
-                post=post['node']
+                post=post['node'],
+                type='post'
             )
-        yield item                  #В пайплайн
+            yield item                  #В пайплайн
 
 
     #Получаем токен для авторизации
