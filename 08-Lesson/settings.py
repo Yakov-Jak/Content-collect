@@ -19,7 +19,7 @@ USER_AGENT = 'Instagram 64.0.0.14.96'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 LOG_ENABLED = True
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 8
@@ -64,9 +64,9 @@ DOWNLOAD_DELAY = 1.25
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'instapars.pipelines.InstaparserPipeline': 300,
-# }
+ITEM_PIPELINES = {
+   'instapars.pipelines.InstaparsPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
